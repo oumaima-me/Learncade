@@ -56,7 +56,6 @@ Earn an NFT Reward:
 ┣ 📄 style.css # styling and layout
 ┣ 📄 script.js # quiz/game logic
 ┣ 📄 README.md # project documentation
-┗ 📂 assets/ # static files
 ┗ 📄 Learncade.png # project logo
 
 🔮 Roadmap
