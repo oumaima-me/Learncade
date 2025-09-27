@@ -170,3 +170,18 @@ footer { background: var(--tertiary-dark); padding: 60px 0 30px; margin-top: 80p
   .features { grid-template-columns: 1fr; }
   .stats { grid-template-columns: 1fr; }
 }
+/* For phones */
+@media (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+  .nav-menu {
+    flex-direction: column; /* stack menu items */
+  }
+}
+
+
