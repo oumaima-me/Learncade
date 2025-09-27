@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Learncade - Gamified Education with NFTs</title>
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" href="Learncade.png">
+
+  <!-- Organization Structured Data for Google -->
+  <script type="application/ld+json">
+  </script>
+
+  <!-- Fonts and Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@600;700;800&display=swap" rel="stylesheet">
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Energy Display -->
+  <div class="energy-display">
+    <div style="font-weight: 600; margin-bottom: 5px;">⚡ Energy</div>
+    <div class="energy-bar">
+      <div class="energy-fill" id="energyFill" style="width: 100%;"></div>
+    </div>
+    <div style="font-size: 0.8rem; color: var(--text-secondary);" id="energyText">3/3 Full</div>
+  </div>
+
+  <div class="container">
+    <!-- Navigation -->
+    <nav>
+      <div class="logo">
+        <img src="Learncade.png" alt="Learncade Adventure Logo" style="height:72px;vertical-align:middle;margin-right:4px;">
+        <span>Learncade</span>
+      </div>
+
+      <div class="nav-links">
+        <a href="#" onclick="showHome()">Home</a>
+        <a href="#" onclick="showCourses()">Courses</a>
+        <a href="#" onclick="showLectures()">Learn</a>
+        <a href="#" onclick="showQuiz()">Quiz</a>
+        <a href="#" onclick="showFinalQuizAccess()" id="finalQuizNav">Final Quiz</a>
+        <a href="#" onclick="showNFTs()">My NFTs</a>
+        <a href="#" onclick="showAbout()">About</a>
+      </div>
+
+      <div class="user-actions">
+        <a href="#" class="btn btn-secondary">Sign In</a>
+        <a href="#" class="btn btn-primary">Get Started</a>
+        <button class="mobile-menu-btn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="homeSection">
+      <div class="hero">
+        <h1>Master Skills Through Gamified Learning</h1>
+        <p>Earn NFTs, unlock achievements, and level up knowledge with an immersive educational platform.</p>
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="showLectures()">
+            <i class="fas fa-play"></i> Start Learning
+          </button>
+          <button class="btn btn-secondary" onclick="showFinalQuizAccess()">
+            <i class="fas fa-rocket"></i> Skip to Final Quiz
+          </button>
+        </div>
+      </div>
+
+      <!-- Features -->
+      <h2 class="section-title">Why Choose Learncade</h2>
+      <div class="features">
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-trophy"></i></div>
+          <h3 class="feature-title">Gamified Learning</h3>
+          <p class="feature-description">Earn points, badges, and NFTs as courses and challenges are completed.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-gem"></i></div>
+          <h3 class="feature-title">Premium NFTs</h3>
+          <p class="feature-description">Bronze, Silver, and Gold tier rewards tied to performance.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon"><i class="fas fa-users"></i></div>
+          <h3 class="feature-title">Community Support</h3>
+          <p class="feature-description">Join a community of learners, get feedback, and collaborate.</p>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <h2 class="section-title">Our Impact</h2>
+      <div class="stats">
+        <div class="stat-card">
+          <div class="stat-number">50,000+</div>
+          <div class="stat-label">Active Learners</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">500+</div>
+          <div class="stat-label">Courses</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">95%</div>
+          <div class="stat-label">Completion Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-number">4.9/5</div>
+          <div class="stat-label">Average Rating</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lectures Page -->
+    <section id="lecturesPage" class="section hidden">
+      <h2 class="section-title">Python Lectures</h2>
+      <div class="quiz-container" style="text-align:center;">
+        <h3>Choose a Lecture</h3>
+        <div style="margin:30px 0;">
+          <button class="btn btn-primary" onclick="openLecture(1)">Lecture 1: Python Basics</button>
+          <button class="btn btn-primary" onclick="openLecture(2)">Lecture 2: Data Types</button>
+          <button class="btn btn-primary" onclick="openLecture(3)">Lecture 3: Control Flow</button>
+        </div>
+        <button class="btn btn-secondary" onclick="showHome()">Back to Home</button>
+      </div>
+    </section>
+
+    <!-- Lecture Section -->
+    <section id="lectureSection" class="section hidden">
+      <h2 class="section-title">Python Fundamentals</h2>
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <h3 id="lectureTitle">Lecture 1: Python Basics</h3>
+          <div class="quiz-progress">
+            <div class="quiz-progress-fill" id="lectureProgressFill" style="width: 0%;"></div>
+          </div>
+          <p id="lectureProgressText">Lecture 1 of 3</p>
+        </div>
+        <div class="question-container" id="lectureContainer">
+          <div class="question" id="lectureContent"></div>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-secondary" id="prevLectureBtn" style="display:none;">Previous</button>
+          <button class="btn btn-primary" id="nextLectureBtn">Next Section</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quiz Section -->
+    <section id="quizSection" class="section hidden">
+      <h2 class="section-title">Python Quiz</h2>
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <h3 id="quizTitle">Quiz: Python Basics</h3>
+          <div class="quiz-progress">
+            <div class="quiz-progress-fill" id="quizProgressFill" style="width: 0%;"></div>
+          </div>
+          <p id="quizProgressText">Question 1 of 5</p>
+        </div>
+
+        <div class="question-container" id="questionContainer">
+          <div class="question" id="questionText">Loading question...</div>
+          <div class="options" id="optionsContainer"></div>
+        </div>
+
+        <div class="quiz-actions">
+          <button class="btn btn-secondary" id="prevBtn" onclick="previousQuestion()">Previous</button>
+          <button class="btn btn-primary" id="submitBtn" onclick="submitQuiz()">Submit Quiz</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Quiz Access -->
+    <section id="finalQuizAccessSection" class="section hidden">
+      <h2 class="section-title">Final Quiz Access</h2>
+      <div class="quiz-container">
+        <div style="text-align: center; padding: 40px;">
+          <h3>🚀 Final Quiz Unlocked!</h3>
+          <p style="font-size: 1.2rem; color: var(--text-secondary); margin: 20px 0;">
+            Complete all lecture quizzes to unlock the final quiz.<br>30 questions, 15 minutes timer, NFT reward based on score!
+          </p>
+          <div style="background: rgba(255, 215, 0, 0.1); border: 1px solid var(--gold); border-radius: var(--radius-md); padding: 20px; margin: 30px 0;">
+            <h4 style="color: var(--gold);">🏆 Final Quiz Features:</h4>
+            <ul style="text-align: left; margin: 15px 0;">
+              <li>30 comprehensive questions</li>
+              <li>15 minutes countdown timer</li>
+              <li>NFT rewards based on performance</li>
+              <li>Mint an NFT instantly</li>
+            </ul>
+          </div>
+          <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px;">
+            <button class="btn btn-primary" onclick="startFinalQuiz()">
+              <i class="fas fa-rocket"></i> Start Final Quiz
+            </button>
+            <button class="btn btn-secondary" onclick="showHome()">
+              <i class="fas fa-arrow-left"></i> Back to Home
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final Quiz Section -->
+    <section id="finalQuizSection" class="section hidden">
+      <h2 class="section-title">Final Python Quiz</h2>
+      <div class="quiz-container">
+        <div class="quiz-header">
+          <h3 id="finalQuizTitle">Final Quiz: Question 1 of 30</h3>
+          <div class="quiz-progress">
+            <div class="quiz-progress-fill" id="finalQuizProgressFill" style="width: 0%;"></div>
+          </div>
+          <p id="finalQuizProgressText">Question 1 of 30</p>
+          <div id="finalQuizTimer" style="font-weight:600;color:var(--warning);margin-top:10px;">Time Left: 15:00</div>
+        </div>
+        <div class="question-container">
+          <div class="question" id="finalQuizContent"></div>
+        </div>
+        <div class="quiz-actions">
+          <button class="btn btn-secondary" id="finalQuizPrevBtn" style="display:none;">Previous</button>
+          <button class="btn btn-primary" id="finalQuizNextBtn">Next Question</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- NFT Section -->
+    <section id="nftSection" class="section hidden">
+      <h2 class="section-title">Your NFT Collection</h2>
+      <div class="nft-section">
+        <h3>🎁 NFT Rewards System</h3>
+        <p>Complete quizzes to earn NFTs based on performance!</p>
+
+        <div class="nft-display" id="nftDisplay" style="display: none;">
+          <div class="nft-tier" id="nftTier">Gold</div>
+          <h4 id="nftTitle">Python Master NFT</h4>
+          <p id="nftDescription">Gold NFT earned for excellent performance!</p>
+          <p><strong>Score:</strong> <span id="nftScore">95%</span></p>
+          <button class="mint-button" id="mintBtn" onclick="mintNFT()">🪙 Mint NFT</button>
+        </div>
+
+        <div class="minting-progress" id="mintingProgress" style="display: none;">
+          <h4>🪙 Minting Your NFT...</h4>
+          <div class="progress-bar">
+            <div class="progress-fill" id="mintProgressFill" style="width: 0%;"></div>
+          </div>
+          <p id="mintStatus">Connecting to blockchain...</p>
+        </div>
+
+        <div id="mintComplete" style="display: none;">
+          <h4 style="color: var(--success);">🎉 NFT Successfully Minted!</h4>
+          <p>NFT added to the collection. View it on a blockchain explorer!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Courses Section -->
+    <section id="coursesSection" class="section hidden">
+      <!-- Educational Images -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 60px;">
+        <div style="text-align: center; padding: 20px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg);">
+          <img src="https://placeholder-image-service.onrender.com/image/400x300?prompt=Digital+Workspace+with+Laptop+and+Floating+UI+Elements&id=1" alt="Digital Workspace" style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 15px;">
+          <h4 style="color: var(--primary-accent); margin-bottom: 10px;">Digital Workspace</h4>
+          <p style="color: var(--text-secondary);">Modern development environment with integrated tools and interfaces.</p>
+        </div>
+        <div style="text-align: center; padding: 20px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg);">
+          <img src="https://placeholder-image-service.onrender.com/image/400x300?prompt=Python+Programming+Logo+with+Snakes&id=2" alt="Python Programming" style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 15px;">
+          <h4 style="color: var(--primary-accent); margin-bottom: 10px;">Python Mastery</h4>
+          <p style="color: var(--text-secondary);">Learn the world’s most popular programming language.</p>
+        </div>
+        <div style="text-align: center; padding: 20px; background: var(--card-bg); border: 1px solid var(--card-border); border-radius: var(--radius-lg);">
+          <img src="https://placeholder-image-service.onrender.com/image/400x300?prompt=Data+Visualization+with+Charts+and+Graphs&id=3" alt="Data Analysis" style="width: 100%; height: 200px; object-fit: cover; border-radius: var(--radius-md); margin-bottom: 15px;">
+          <h4 style="color: var(--primary-accent); margin-bottom: 10px;">Data Analysis</h4>
+          <p style="color: var(--text-secondary);">Master data visualization and analysis techniques.</p>
+        </div>
+      </div>
+
+      <h2 class="section-title">Featured Courses</h2>
+      <div class="courses-grid">
+        <div class="course-card" onclick="startPythonCourse()">
+          <div class="course-image">
+            <img src="https://placeholder-image-service.onrender.com/image/400x200?prompt=Python+Programming+Coding+Screen&id=1" alt="Python Programming Course">
+          </div>
+          <div class="course-content">
+            <h3 class="course-title">Python Mastery</h3>
+            <p class="course-description">Learn Python from basics to advanced concepts with real projects.</p>
+            <div class="course-meta">
+              <span class="course-level">Beginner to Advanced</span>
+              <span class="course-rating">★ 4.9</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="startDataScienceCourse()">
+          <div class="course-image">
+            <img src="https://placeholder-image-service.onrender.com/image/400x200?prompt=Data+Science+Visualization+Dashboard&id=2" alt="Data Science Course">
+          </div>
+          <div class="course-content">
+            <h3 class="course-title">Data Science Fundamentals</h3>
+            <p class="course-description">Explore data analysis, visualization, and machine learning.</p>
+            <div class="course-meta">
+              <span class="course-level">Intermediate</span>
+              <span class="course-rating">★ 4.8</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="course-card" onclick="startWebDevCourse()">
+          <div class="course-image">
+            <img src="https://placeholder-image-service.onrender.com/image/400x200?prompt=Web+Development+Coding+Screen&id=3" alt="Web Development Course">
+          </div>
+          <div class="course-content">
+            <h3 class="course-title">Full-Stack Web Development</h3>
+            <p class="course-description">Master frontend and backend technologies to build modern apps.</p>
+            <div class="course-meta">
+              <span class="course-level">Beginner to Advanced</span>
+              <span class="course-rating">★ 4.7</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="aboutSection" class="section hidden">
+      <h2 class="section-title">About Learncade</h2>
+      <div class="quiz-container">
+        <h3>Revolutionizing Education Through Gamification</h3>
+        <p>Learncade uses gamification, NFT rewards, and interactive quizzes to motivate and track progress.</p>
+
+        <h4 style="margin-top: 30px; color: var(--primary-accent);">Key Features:</h4>
+        <ul style="margin: 20px 0; padding-left: 30px;">
+          <li>Interactive quizzes with instant feedback</li>
+          <li>NFT rewards based on performance</li>
+          <li>Energy system for strategic learning</li>
+          <li>Progress tracking and achievements</li>
+          <li>Community features and leaderboards</li>
+        </ul>
+
+        <h4 style="margin-top: 30px; color: var(--primary-accent);">NFT Tiers:</h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 20px 0;">
+          <div style="text-align: center; padding: 20px; background: rgba(205, 127, 50, 0.1); border-radius: var(--radius-md);">
+            <h5 style="color: #cd7f32;">🥉 Bronze NFT</h5>
+            <p>60-79% Score</p>
+          </div>
+          <div style="text-align: center; padding: 20px; background: rgba(192, 192, 192, 0.1); border-radius: var(--radius-md);">
+            <h5 style="color: #c0c0c0;">🥈 Silver NFT</h5>
+            <p>80-94% Score</p>
+          </div>
+          <div style="text-align: center; padding: 20px; background: rgba(255, 215, 0, 0.1); border-radius: var(--radius-md);">
+            <h5 style="color: var(--gold);">🥇 Gold NFT</h5>
+            <p>95-100% Score</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h3>Learncade</h3>
+          <p>Gamified learning platform for mastering skills through interactive challenges.</p>
+          <div class="social-links">
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h3>Explore</h3>
+          <ul>
+            <li><a href="#" onclick="showCourses()">Courses</a></li>
+            <li><a href="#" onclick="showQuiz()">Quiz</a></li>
+            <li><a href="#" onclick="showNFTs()">NFTs</a></li>
+            <li><a href="#">Success Stories</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Support</h3>
+          <ul>
+            <li><a href="#">Help Center</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Contact Us</a></li>
+            <li><a href="#">Community</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h3>Legal</h3>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">GDPR</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; 2025 Learncade. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- App Script -->
+  <script src="app.js"></script>
+</body>
+</html>
