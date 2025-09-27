@@ -24,7 +24,7 @@ Do well enough, and you’ll unlock a Final Exam with an NFT prize system 🏅.
 🚀 Getting Started
 
 1. Clone the repo
-   git clone https://github.com/yourusername/learncade.git
+   git clone https://github.com/oumaima-me/learncade.git
    cd learncade
 
 2. Open in browser
