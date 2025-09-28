@@ -23,7 +23,10 @@ let failCount = 0;
 let cooldownEnd = null;
 let boosterActive = false;
 
-// Navigation
+// Mobile menu state
+let mobileMenuOpen = false;
+
+// Enhanced Navigation
 function showSection(sectionId) {
   const sections = ['homeSection', 'quizSection', 'nftSection', 'coursesSection', 'aboutSection', 'lecturesPage', 'lectureSection', 'finalQuizAccessSection', 'finalQuizSection'];
   sections.forEach(id => {
@@ -32,13 +35,98 @@ function showSection(sectionId) {
   });
   const target = document.getElementById(sectionId);
   if (target) target.classList.remove('hidden');
+  
+  // Close mobile menu when navigating
+  closeMobileMenu();
+  
+  // Scroll to top on section change
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
 function showHome() { showSection('homeSection'); }
 function showQuiz() { showSection('quizSection'); startQuiz(); }
 function showNFTs() { showSection('nftSection'); }
 function showCourses() { showSection('coursesSection'); }
 function showAbout() { showSection('aboutSection'); }
 function showLectures() { showSection('lecturesPage'); }
+
+// Simple and Direct Mobile Menu Functions
+function toggleMobileMenu() {
+  console.log('toggleMobileMenu called');
+  const navLinks = document.querySelector('.nav-links');
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  
+  if (navLinks && mobileMenuBtn) {
+    mobileMenuOpen = !mobileMenuOpen;
+    console.log('Mobile menu state:', mobileMenuOpen);
+    
+    if (mobileMenuOpen) {
+      // Open menu
+      navLinks.style.display = 'flex';
+      navLinks.style.flexDirection = 'column';
+      navLinks.style.position = 'absolute';
+      navLinks.style.top = '100%';
+      navLinks.style.left = '0';
+      navLinks.style.right = '0';
+      navLinks.style.background = '#1a1438';
+      navLinks.style.padding = '20px';
+      navLinks.style.borderRadius = '16px';
+      navLinks.style.marginTop = '10px';
+      navLinks.style.boxShadow = '0 0 20px rgba(138, 43, 226, 0.4)';
+      navLinks.style.zIndex = '1000';
+      
+      mobileMenuBtn.innerHTML = '<i class="fas fa-times"></i>';
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Close menu
+      closeMobileMenu();
+    }
+  } else {
+    console.error('Mobile menu elements not found');
+  }
+}
+
+function closeMobileMenu() {
+  const navLinks = document.querySelector('.nav-links');
+  const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+  
+  if (navLinks && mobileMenuBtn) {
+    mobileMenuOpen = false;
+    
+    // Reset all styles
+    navLinks.style.display = '';
+    navLinks.style.flexDirection = '';
+    navLinks.style.position = '';
+    navLinks.style.top = '';
+    navLinks.style.left = '';
+    navLinks.style.right = '';
+    navLinks.style.background = '';
+    navLinks.style.padding = '';
+    navLinks.style.borderRadius = '';
+    navLinks.style.marginTop = '';
+    navLinks.style.boxShadow = '';
+    navLinks.style.zIndex = '';
+    
+    mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+    document.body.style.overflow = '';
+    
+    console.log('Mobile menu closed');
+  }
+}
+
+// Enhanced click outside handler
+function handleClickOutside(event) {
+  if (mobileMenuOpen) {
+    const navLinks = document.querySelector('.nav-links');
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    
+    if (navLinks && mobileMenuBtn) {
+      if (!navLinks.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+        closeMobileMenu();
+      }
+    }
+  }
+}
 
 // Lectures
 let lecturePassed = [false, false, false];
@@ -367,6 +455,25 @@ function previousQuestion() {
   }
 }
 
+function updateProgress() {
+  const progressPercentage = ((currentQuestion + 1) / quizQuestions.length) * 100;
+  document.getElementById('quizProgressFill').style.width = progressPercentage + '%';
+  document.getElementById('quizProgressText').textContent = `Question ${currentQuestion + 1} of ${quizQuestions.length}`;
+  
+  // Update button visibility
+  const prevBtn = document.getElementById('prevBtn');
+  const submitBtn = document.getElementById('submitBtn');
+  
+  if (prevBtn) {
+    prevBtn.style.display = currentQuestion > 0 ? 'block' : 'none';
+  }
+  
+  if (submitBtn) {
+    submitBtn.textContent = currentQuestion === quizQuestions.length - 1 ? 'Submit Quiz' : 'Next Question';
+    submitBtn.onclick = currentQuestion === quizQuestions.length - 1 ? submitQuiz : nextQuestion;
+  }
+}
+
 function submitQuiz() {
   const selectedOption = document.querySelector('input[name="answer"]:checked');
   userAnswers[currentQuestion] = selectedOption ? parseInt(selectedOption.value) : null;
@@ -464,7 +571,7 @@ function completeBooster() {
   showQuizResults(userScore / quizQuestions.length * 100);
 }
 
-// Energy
+// Energy System
 function refillEnergy() {
   const now = Date.now();
   const elapsed = now - lastEnergyRefill;
@@ -483,43 +590,217 @@ function startEnergyTimer() {
 
 function updateEnergyDisplay() {
   const energyPercentage = (userEnergy / maxEnergy) * 100;
-  document.getElementById('energyFill').style.width = energyPercentage + '%';
-  document.getElementById('energyText').textContent = `${userEnergy}/${maxEnergy} Energy`;
+  const energyFill = document.getElementById('energyFill');
+  const energyText = document.getElementById('energyText');
+  
+  if (energyFill) energyFill.style.width = energyPercentage + '%';
+  if (energyText) energyText.textContent = `${userEnergy}/${maxEnergy} Energy`;
 }
 
-// NFT display trigger from quiz
+// NFT display
 function showNFTEarned(percentage) {
   showNFTs();
   let tier, tierColor, tierEmoji;
   if (percentage >= 95) { tier = 'Gold'; tierColor = 'var(--gold)'; tierEmoji = '🥇'; }
   else if (percentage >= 80) { tier = 'Silver'; tierColor = '#c0c0c0'; tierEmoji = '🥈'; }
   else { tier = 'Bronze'; tierColor = '#cd7f32'; tierEmoji = '🥉'; }
-  document.getElementById('nftTier').textContent = `${tierEmoji} ${tier} NFT`;
-  document.getElementById('nftTier').className = `nft-tier ${tier.toLowerCase()}`;
-  document.getElementById('nftTitle').textContent = `Python ${tier} Master`;
-  document.getElementById('nftDescription').textContent = `A ${tier} NFT earned for ${percentage}% performance!`;
-  document.getElementById('nftScore').textContent = `${percentage}%`;
-  document.getElementById('nftDisplay').style.display = 'block';
+  
+  const nftTier = document.getElementById('nftTier');
+  const nftTitle = document.getElementById('nftTitle');
+  const nftDescription = document.getElementById('nftDescription');
+  const nftScore = document.getElementById('nftScore');
+  const nftDisplay = document.getElementById('nftDisplay');
+  
+  if (nftTier) {
+    nftTier.textContent = `${tierEmoji} ${tier} NFT`;
+    nftTier.className = `nft-tier ${tier.toLowerCase()}`;
+  }
+  if (nftTitle) nftTitle.textContent = `Python ${tier} Master`;
+  if (nftDescription) nftDescription.textContent = `A ${tier} NFT earned for ${percentage}% performance!`;
+  if (nftScore) nftScore.textContent = `${percentage}%`;
+  if (nftDisplay) nftDisplay.style.display = 'block';
 }
 
-// Course stub handlers
+// NFT Minting
+function mintNFT() {
+  const mintBtn = document.getElementById('mintBtn');
+  const mintingProgress = document.getElementById('mintingProgress');
+  const mintComplete = document.getElementById('mintComplete');
+  
+  if (mintBtn) mintBtn.style.display = 'none';
+  if (mintingProgress) mintingProgress.style.display = 'block';
+  
+  const steps = [
+    { progress: 20, text: 'Connecting to blockchain...' },
+    { progress: 40, text: 'Validating transaction...' },
+    { progress: 60, text: 'Creating NFT metadata...' },
+    { progress: 80, text: 'Uploading to IPFS...' },
+    { progress: 100, text: 'Finalizing mint...' }
+  ];
+  
+  let currentStep = 0;
+  const mintInterval = setInterval(() => {
+    if (currentStep < steps.length) {
+      const step = steps[currentStep];
+      const mintProgressFill = document.getElementById('mintProgressFill');
+      const mintStatus = document.getElementById('mintStatus');
+      
+      if (mintProgressFill) mintProgressFill.style.width = step.progress + '%';
+      if (mintStatus) mintStatus.textContent = step.text;
+      currentStep++;
+    } else {
+      clearInterval(mintInterval);
+      setTimeout(() => {
+        if (mintingProgress) mintingProgress.style.display = 'none';
+        if (mintComplete) mintComplete.style.display = 'block';
+      }, 1000);
+    }
+  }, 800);
+}
+
+// Course handlers
 function startPythonCourse() { alert('Starting Python Course! Navigate to course content.'); }
 function startDataScienceCourse() { alert('Starting Data Science Course! Navigate to course content.'); }
 function startWebDevCourse() { alert('Starting Web Development Course! Navigate to course content.'); }
 
-// Initialize
-document.addEventListener('DOMContentLoaded', function () {
-  updateEnergyDisplay();
-  showHome();
-  document.getElementById('finalQuizNav').style.display = 'none';
-  startEnergyTimer();
+// Responsive utilities
+function handleResize() {
+  // Close mobile menu on resize to larger screen
+  if (window.innerWidth > 992 && mobileMenuOpen) {
+    closeMobileMenu();
+  }
+  
+  // Adjust energy display position on mobile
+  const energyDisplay = document.querySelector('.energy-display');
+  if (energyDisplay) {
+    if (window.innerWidth <= 992) {
+      energyDisplay.style.position = 'relative';
+      energyDisplay.style.top = 'auto';
+      energyDisplay.style.right = 'auto';
+    } else {
+      energyDisplay.style.position = 'fixed';
+      energyDisplay.style.top = '20px';
+      energyDisplay.style.right = '20px';
+    }
+  }
+}
 
-  // Mobile menu toggle
+// Touch and swipe support for mobile
+let touchStartX = 0;
+let touchStartY = 0;
+
+function handleTouchStart(event) {
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+}
+
+function handleTouchMove(event) {
+  if (!touchStartX || !touchStartY) return;
+  
+  const touchEndX = event.touches[0].clientX;
+  const touchEndY = event.touches[0].clientY;
+  
+  const diffX = touchStartX - touchEndX;
+  const diffY = touchStartY - touchEndY;
+  
+  // Prevent horizontal scrolling on mobile
+  if (Math.abs(diffX) > Math.abs(diffY)) {
+    event.preventDefault();
+  }
+}
+
+// Initialize everything
+document.addEventListener('DOMContentLoaded', function () {
+  console.log('DOM loaded, initializing Learncade...');
+  
+  // Initialize energy system
+  updateEnergyDisplay();
+  startEnergyTimer();
+  
+  // Show home section
+  showHome();
+  
+  // Hide final quiz nav initially
+  const finalQuizNav = document.getElementById('finalQuizNav');
+  if (finalQuizNav) finalQuizNav.style.display = 'none';
+  
+  // Setup mobile menu - simple and direct approach
+  setupMobileMenu();
+  
+  // Add click outside listener
+  document.addEventListener('click', handleClickOutside);
+  
+  // Add resize listener
+  window.addEventListener('resize', handleResize);
+  
+  // Add touch support
+  document.addEventListener('touchstart', handleTouchStart, { passive: false });
+  document.addEventListener('touchmove', handleTouchMove, { passive: false });
+  
+  // Handle resize on load
+  handleResize();
+  
+  // Smooth scrolling for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        target.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    });
+  });
+  
+  // Enhanced keyboard navigation
+  document.addEventListener('keydown', function(event) {
+    // Close mobile menu with Escape key
+    if (event.key === 'Escape' && mobileMenuOpen) {
+      closeMobileMenu();
+    }
+    
+    // Navigate quiz with arrow keys
+    if (event.target.closest('.quiz-container')) {
+      if (event.key === 'ArrowLeft' && currentQuestion > 0) {
+        previousQuestion();
+      } else if (event.key === 'ArrowRight' && currentQuestion < quizQuestions.length - 1) {
+        nextQuestion();
+      }
+    }
+  });
+});
+
+// Simple mobile menu setup function
+function setupMobileMenu() {
+  console.log('Setting up mobile menu...');
+  
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
   const navLinks = document.querySelector('.nav-links');
+  
+  console.log('Mobile menu button found:', mobileMenuBtn);
+  console.log('Nav links found:', navLinks);
+  
   if (mobileMenuBtn && navLinks) {
-    mobileMenuBtn.addEventListener('click', function () {
-      navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+    // Add click event listener
+    mobileMenuBtn.addEventListener('click', function(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log('Mobile menu button clicked!');
+      toggleMobileMenu();
     });
+    
+    // Add click listeners to nav links to close menu when navigating
+    navLinks.addEventListener('click', function(event) {
+      if (event.target.tagName === 'A') {
+        console.log('Nav link clicked, closing menu');
+        closeMobileMenu();
+      }
+    });
+    
+    console.log('Mobile menu setup complete!');
+  } else {
+    console.error('Mobile menu elements not found!');
   }
-});
+}
